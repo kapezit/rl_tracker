@@ -1,3 +1,5 @@
+#Need to make the "Epic" change.
+
 import csv
 import requests
 import random
@@ -17,7 +19,7 @@ id_table = list(ids_data)
 #base_url variable should be changed depending on season ...profile/{}/{}/segments/playlist?season=add-in-here-the-season-number
 #add-in-here-the-season-numer = 13,14,15
 #Season 1 after Free to Play = season 15
-#Seson 2 FTP = 16.. and so on.
+#Seson 2 FTP = 16..
 
 #first {} and second {} are platform and id that are automatically grabbed from the csv first and second column.
 #Possible error caused by CSV file: program might be trying to get data from blanks spaces in the table.
