@@ -1,4 +1,4 @@
-#Need to make the "Epic" change.
+#Epic added in platforms. CSV should have "epic" in the columns when Epic is the platform.
 
 import csv
 import requests
@@ -12,9 +12,6 @@ data = open('all_platforms_ids.csv')
 ids_data = csv.reader(data)
 
 id_table = list(ids_data)
-
-
-#Feature Code Below ----
 
 
 #PLEASE READ BELOW ------------------------------------------------------
@@ -161,6 +158,14 @@ for line in id_table[1:]:
 		else:
 			mmr_program_errors("Not XBL")
 
+
+	elif line[0].lower() == "epic":
+
+		if line[1].isdigit() == False:
+			ranked_mmr("epic",line[1],base_url,playlist_mode)
+			
+		else:
+			mmr_program_errors("Not Epic")
 
 
 	elif line[0].lower() == "psn" or line[0].lower() == "play" or line[0].lower() == "playstation":
