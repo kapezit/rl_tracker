@@ -17,12 +17,14 @@ Script uses a file named [ all_platforms_ids.csv ] to get the platforms and Ids 
 CSV ISSUES fixes and prevention
 ---------
 
-The program is opening a CSV file [ all_platforms_ids.csv ] with column A as the platform and columns B as the ID.
+1)The program is opening a CSV file [ all_platforms_ids.csv ] with column A as the platform and columns B as the ID.
 Column one(plaform) reads the following codes: steam, xbl, xbox, xboxlive, psn, play, playstation, epic. Other codes dont work.
 
-Sometimes this file can trigger an error if it thinks there's data in blank spaces.
+2)Sometimes this file can trigger an error if it thinks there's data in blank spaces.
 CSV Error: Phantom data happens when a new set is copy/pasted into a column (columns) and the new set is smaller than the previous one.
 FIX: Make sure you select all blank rows and delete the data even when nothing appears in those rows.
+
+3)Make sure that all data in this csv is formatted as text and not numbers. Steam ids (numbers) can become truncated. Usually this truncation does not cause any errors but it is better to prevent any possible issues.
 
 
 
