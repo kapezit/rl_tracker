@@ -4,9 +4,10 @@ import csv
 import requests
 import random
 import time
+from playwright.sync_api import sync_playwright
+import json
 
-
-
+#data = open('C:/Users/shero/MMR/all_platforms_ids.csv')
 data = open('all_platforms_ids.csv')
 
 ids_data = csv.reader(data)
@@ -19,7 +20,7 @@ id_table = list(ids_data)
 #base_url variable should be changed depending on season ...profile/{}/{}/segments/playlist?season=add-in-here-the-season-number
 #add-in-here-the-season-numer = 13,14,15
 #Season 1 after Free to Play = season 15
-#Seson 2 FTP = 16..
+#Season 4 FTP = 18..  Season 5 = 19
 
 #first {} and second {} are platform and id that are automatically grabbed from the csv first and second column.
 #Possible error caused by CSV file: program might be trying to get data from blanks spaces in the table.
@@ -30,7 +31,7 @@ id_table = list(ids_data)
 
 #BASE_URL variable BELOW. Just the last number in the URL to match your desired season. Other changes can break the program.
 
-base_url = 'https://api.tracker.gg/api/v2/rocket-league/standard/profile/{}/{}/segments/playlist?season=16'
+base_url = 'https://api.tracker.gg/api/v2/rocket-league/standard/profile/{}/{}/segments/playlist?season=19'
 
 #BASE_URL variable ABOVE. Just the last number in the URL to match your desired season. Other changes can break the program.
 
@@ -62,7 +63,7 @@ print("Scanning MMRs for {}...".format(playlist_mode))
 
 def barfing_url():
     """causes random delay"""
-    secs = random.choice(range(4,15))
+    secs = random.choice(range(4,35))
     time.sleep(secs)
 
 
@@ -74,16 +75,23 @@ def mmr_program_errors(error_type):
 def ranked_mmr(platform,account_id,base_url,game_mode):
     """needs import csv and import requests ::: platform such as steam, id, url for json file, game_mode as 3s"""
     
-    
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
     json_object = "{}"
     
 
 #for i in range for the barfing_url() to run a max of 3 times, this is to call again to the server when there is a 503 error
     for i in range(3):
         try:
-            webdata = requests.get(base_url.format(platform,account_id), headers=headers)
-            json_object = webdata.json()
+            # To get around cloudflare protection, we need to spoof a real browser
+            # TODO: maybe need to only launch this once and then just do requests
+            with sync_playwright() as p:
+                # Webkit is fastest to start and hardest to detect
+                browser = p.webkit.launch(headless=True)
+                page = browser.new_page()
+                page.goto(base_url.format(platform,account_id))
+                # Use evaluate instead of `content` not to import bs4 or lxml
+                webdata = page.evaluate('document.querySelector("pre").innerText')
+
+            json_object = json.loads(webdata)
             break
         except Exception as e:
             print(e)
@@ -107,15 +115,14 @@ def ranked_mmr(platform,account_id,base_url,game_mode):
 
     if game_mode == "2s":
 
-    	playlist_id_number = 11
+        playlist_id_number = 11
 
     elif game_mode == "3s":
-    	playlist_id_number = 13
+        playlist_id_number = 13
 
 
 
-    
-    if "errors" not in webdata.json():
+    if "errors" not in json_object:
         
         data_list = json_object["data"]
         
